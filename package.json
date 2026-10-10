@@ -1,0 +1,57 @@
+{
+	"name": "@three-ws/skill-license",
+	"version": "0.1.2",
+	"description": "On-chain skill licenses for agents — each purchased skill is a 1/1 SPL NFT plus a deterministic SkillLicense PDA. Mint, verify, and read trustless skill access in one import, no database required.",
+	"type": "module",
+	"main": "./src/index.js",
+	"module": "./src/index.js",
+	"types": "./src/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.d.ts",
+			"import": "./src/index.js",
+			"default": "./src/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"src",
+		"example",
+		"README.md",
+		"LICENSE"
+	],
+	"scripts": {
+		"test": "node --test test/*.test.js",
+		"example": "node example/verify-license.mjs"
+	},
+	"keywords": [
+		"solana",
+		"anchor",
+		"nft",
+		"spl",
+		"pda",
+		"license",
+		"access-control",
+		"skill",
+		"agent",
+		"three.ws",
+		"ai-agents"
+	],
+	"author": "nirholas <support@three.ws>",
+	"license": "Apache-2.0",
+	"homepage": "https://nirholas.github.io/skill-license/",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/nirholas/skill-license.git"
+	},
+	"bugs": {
+		"url": "https://github.com/nirholas/skill-license/issues"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"dependencies": {},
+	"publishConfig": {
+		"access": "public"
+	}
+}

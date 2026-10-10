@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>@three-ws/skill-license: On-chain skill licenses for agents</title>
+<meta name="description" content="On-chain skill licenses for agents — each purchased skill is a 1/1 SPL NFT plus a deterministic SkillLicense PDA. Mint, verify, and read trustless skill access in one import, no database required.">
+<link rel="canonical" href="https://nirholas.github.io/skill-license/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="three.ws">
+<meta property="og:title" content="@three-ws/skill-license">
+<meta property="og:description" content="On-chain skill licenses for agents — each purchased skill is a 1/1 SPL NFT plus a deterministic SkillLicense PDA. Mint, verify, and read trustless skill access in one import, no database required.">
+<meta property="og:url" content="https://nirholas.github.io/skill-license/">
+<meta property="og:image" content="https://nirholas.github.io/skill-license/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="@three-ws/skill-license">
+<meta name="twitter:description" content="On-chain skill licenses for agents — each purchased skill is a 1/1 SPL NFT plus a deterministic SkillLicense PDA. Mint, verify, and read trustless skill access in one import, no database required.">
+<meta name="twitter:image" content="https://nirholas.github.io/skill-license/og.png">
+<meta name="keywords" content="solana, anchor, nft, spl, pda, license, access-control, skill, agent, three.ws, ai-agents">
+<link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+<link rel="icon" href="https://three.ws/three-ws-mcp-icon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"@three-ws/skill-license","description":"On-chain skill licenses for agents — each purchased skill is a 1/1 SPL NFT plus a deterministic SkillLicense PDA. Mint, verify, and read trustless skill access in one import, no database required.","codeRepository":"https://github.com/nirholas/skill-license","programmingLanguage":"JavaScript","license":"https://spdx.org/licenses/Apache-2.0.html","version":"0.1.2","url":"https://nirholas.github.io/skill-license/","author":{"@type":"Organization","name":"three.ws","url":"https://three.ws"},"keywords":"solana, anchor, nft, spl, pda, license, access-control, skill, agent, three.ws, ai-agents"}</script>
+<style>:root{--bg:#fff;--fg:#111418;--mut:#586069;--line:#e3e6ea;--acc:#2563eb;--code:#f4f6f8;--card:#fafbfc}
+@media(prefers-color-scheme:dark){:root{--bg:#0b0d10;--fg:#e8eaed;--mut:#9aa3ad;--line:#232830;--acc:#6ea0ff;--code:#14181d;--card:#10141a}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--acc)}a:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+header.bar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{font-weight:700;text-decoration:none;color:var(--fg)}
+.bar nav{margin-left:auto;display:flex;gap:16px;font-size:14px}
+.bar nav a{color:var(--mut);text-decoration:none;transition:color .15s}.bar nav a:hover{color:var(--fg)}
+.hero{max-width:1100px;margin:0 auto;padding:48px 16px 24px}
+.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.15;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:var(--mut);max-width:70ch;font-size:18px;margin:0 0 24px}
+.install{display:flex;align-items:center;gap:8px;max-width:620px;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:6px 6px 6px 14px}
+.install code{flex:1;overflow-x:auto;white-space:nowrap;font:14px ui-monospace,SFMono-Regular,Menlo,monospace}
+.install button{border:0;background:var(--acc);color:#fff;border-radius:7px;padding:8px 14px;font:600 13px system-ui;cursor:pointer;transition:transform .12s,opacity .12s}
+.install button:hover{opacity:.9}.install button:active{transform:scale(.96)}
+.cta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.cta a{padding:9px 16px;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;color:var(--fg);transition:border-color .15s,transform .15s}
+.cta a:hover{border-color:var(--acc);transform:translateY(-1px)}.cta a.pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.layout{max-width:1100px;margin:0 auto;padding:8px 16px 64px;display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:40px}
+@media(max-width:860px){.layout{grid-template-columns:minmax(0,1fr)}.toc{display:none}}
+.toc{position:sticky;top:76px;align-self:start;font-size:14px;border-left:1px solid var(--line);padding-left:16px}
+.toc p{margin:0 0 8px;font-weight:700;color:var(--mut);text-transform:uppercase;font-size:12px;letter-spacing:.06em}
+.toc ul{list-style:none;margin:0;padding:0}.toc li{margin:6px 0}.toc a{color:var(--mut);text-decoration:none}.toc a:hover{color:var(--fg)}
+main{min-width:0;overflow-wrap:anywhere}main pre code{overflow-wrap:normal}main img{max-width:100%;height:auto}
+main h2{margin-top:2.2em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+.anchor{margin-left:-1.1em;padding-right:.4em;text-decoration:none;opacity:0;color:var(--mut)}h2:hover .anchor,h3:hover .anchor,h4:hover .anchor{opacity:1}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.5}
+code{font:0.9em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--code);padding:.15em .35em;border-radius:5px}pre code{background:none;padding:0}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%}th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}th{background:var(--card)}
+blockquote{margin:1em 0;padding:.2em 1em;border-left:4px solid var(--line);color:var(--mut)}
+footer{border-top:1px solid var(--line);color:var(--mut);font-size:14px}
+.foot-in{max-width:1100px;margin:0 auto;padding:24px 16px;display:flex;gap:16px;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}</style>
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+<a class="brand" href="https://nirholas.github.io/skill-license/">@three-ws/skill-license</a>
+<nav aria-label="Project links"><a href="https://github.com/nirholas/skill-license">GitHub</a><a href="https://www.npmjs.com/package/@three-ws/skill-license">npm</a><a href="llms.txt">llms.txt</a><a href="https://three.ws">three.ws</a></nav>
+</div></header>
+<section class="hero">
+<h1>@three-ws/skill-license</h1>
+<p>On-chain skill licenses for agents — each purchased skill is a 1/1 SPL NFT plus a deterministic SkillLicense PDA. Mint, verify, and read trustless skill access in one import, no database required.</p>
+<div class="install" role="group" aria-label="Install command"><code>npm install @three-ws/skill-license</code><button type="button" data-copy="npm install @three-ws/skill-license">Copy</button></div>
+<div class="cta"><a class="pri" href="https://github.com/nirholas/skill-license">View on GitHub</a><a href="https://github.com/nirholas/skill-license/stargazers">Star the repo</a></div>
+</section>
+<div class="layout">
+<main id="content"><p align="center"><strong>On-chain skill licenses — every purchased agent skill is a 1/1 SPL NFT and a deterministic <code>SkillLicense</code> PDA. Mint, verify, and read trustless access in one import.</strong></p><p align="center">
+  <a href="https://www.npmjs.com/package/@three-ws/skill-license"><img alt="npm" src="https://img.shields.io/npm/v/@three-ws/skill-license?logo=npm&color=cb3837"></a>
+  <a href="https://www.npmjs.com/package/@three-ws/skill-license"><img alt="downloads" src="https://img.shields.io/npm/dm/@three-ws/skill-license?color=cb3837"></a>
+  <img alt="license" src="https://img.shields.io/npm/l/@three-ws/skill-license?color=3b82f6">
+  <img alt="node" src="https://img.shields.io/node/v/@three-ws/skill-license?color=339933&logo=node.js">
+</p><p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#api">API</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="https://three.ws">three.ws</a>
+</p><hr>
+<blockquote>
+<p><code>@three-ws/skill-license</code> is the official client for the three.ws
+<strong><code>skill_license</code></strong> Solana program — a trustless way to prove that a wallet
+owns a purchased agent skill. Each license is a real 1-of-1 SPL NFT held in the
+buyer&#39;s wallet, paired with a deterministic <code>SkillLicense</code> PDA that anyone can
+re-derive and read in a single RPC call. It wraps the public, auth-free verify
+endpoint (<a href="https://three.ws"><code>GET /api/skills/license-onchain</code></a>) — which derives
+the <code>SkillLicense</code> PDA and reads it back for you — so checking access is one
+function call instead of a database round-trip. It pairs with
+<a href="https://www.npmjs.com/package/@three-ws/x402-server"><code>@three-ws/x402-server</code></a>
+— gate a paid endpoint on a license the holder actually owns on-chain.</p>
+</blockquote>
+<h2 id="why"><a class="anchor" href="#why" aria-label="Link to this section">#</a>Why</h2>
+<p>The usual way to answer &quot;can this wallet use skill X on agent Y?&quot; is a database
+lookup you have to trust, run, and keep online. That&#39;s a single point of failure
+and a closed door to anyone who isn&#39;t you.</p>
+<p>The <code>skill_license</code> program makes the answer <strong>public chain state</strong>:</p>
+<ul>
+<li><strong>A license is an asset, not a row.</strong> A 1/1 SPL NFT lands in the buyer&#39;s
+wallet — visible, ownable, transferable. Real ownership, not an entry you can
+silently flip.</li>
+<li><strong>Verification is deterministic.</strong> The <code>SkillLicense</code> PDA is derived from
+<code>(owner, agent_mint, sha256(skill_name))</code>. Anyone re-derives the same address
+and reads it back: a PDA that exists with <code>revoked_at == 0</code> means the wallet
+owns the skill. No auth, no API key, no database.</li>
+<li><strong>One <code>getAccountInfo</code>, no enumeration.</strong> The PDA is the strongly-typed record
+you check — you never have to walk a wallet&#39;s token accounts to find the NFT.</li>
+<li><strong>Refundable.</strong> The minter retains freeze authority, so a refund can freeze
+the NFT and stamp <code>revoked_at</code> while leaving the record readable, so verifiers
+see the revoked state.</li>
+</ul>
+<p>This SDK is the one-call front door to that chain state: <code>verifyLicense(...)</code>
+→ <code>true | false</code>, resolved through the platform&#39;s public read endpoint, which
+does the PDA derivation and RPC read for you.</p>
+<h2 id="install"><a class="anchor" href="#install" aria-label="Link to this section">#</a>Install</h2>
+<pre><code class="language-bash">npm install @three-ws/skill-license
+</code></pre>
+<p>Zero runtime dependencies. Works in Node 18+ and the browser (uses <code>fetch</code>).
+Verification only reads public chain state through the platform endpoint, so no
+wallet, signer, or RPC of your own is needed to check a license.</p>
+<h2 id="quick-start"><a class="anchor" href="#quick-start" aria-label="Link to this section">#</a>Quick start</h2>
+<p>The one call that sells it — does this wallet own this skill, right now, on
+chain?</p>
+<pre><code class="language-js">import { verifyLicense } from &#39;@three-ws/skill-license&#39;;
+
+const owns = await verifyLicense({
+  holder: &#39;HoLDeRwa11et1111111111111111111111111111111&#39;,
+  agent: &#39;THREEsynthetic11111111111111111111111111111&#39;, // agent skill-collection mint
+  skill: &#39;web-search&#39;,
+});
+
+console.log(owns); // → true | false
+</code></pre>
+<p>A runnable version of this lives in <a href="https://github.com/nirholas/skill-license/blob/main/example/verify-license.mjs">example/verify-license.mjs</a>.
+It hits the live public read endpoint, so it needs no key, no wallet, and no RPC:</p>
+<pre><code class="language-bash">node example/verify-license.mjs                        # the synthetic placeholders above
+node example/verify-license.mjs &lt;holder&gt; &lt;agentMint&gt; &lt;skill&gt;
+</code></pre>
+<p>The placeholders are clearly synthetic but decode to real 32-byte base58 keys, so
+the snippet runs as written and answers <code>false</code> (nothing licensed at that triple).
+An address that is <em>not</em> a valid 32-byte key is rejected with a <code>validation_error</code>
+(400) before anything touches the chain.</p>
+<p>Need the full record, not just a boolean — purchase date, NFT mint, explorer
+link, revoked state:</p>
+<pre><code class="language-js">import { getLicense } from &#39;@three-ws/skill-license&#39;;
+
+const license = await getLicense({
+  holder: &#39;HoLDeRwa11et1111111111111111111111111111111&#39;,
+  agent: &#39;THREEsynthetic11111111111111111111111111111&#39;,
+  skill: &#39;web-search&#39;,
+});
+if (license?.owned) {
+  console.log(license.nftMint);      // the 1/1 SPL NFT in the holder&#39;s wallet
+  console.log(license.purchaseDate); // unix seconds
+  console.log(license.explorer);     // solscan/explorer link
+}
+</code></pre>
+<p>Mint a license after a confirmed purchase (server-side, minter-signed):</p>
+<pre><code class="language-js">import { mintLicense } from &#39;@three-ws/skill-license&#39;;
+
+// Runs on your backend, authenticated as the buyer. Verifies the payment was
+// confirmed on-chain, then mints the 1/1 NFT + SkillLicense PDA to the wallet.
+const { nftMint, signature } = await mintLicense({
+  agentId: &#39;3b1f…-uuid&#39;,
+  skill: &#39;web-search&#39;,
+  buyer: &#39;HoLDeRwa11et1111111111111111111111111111111&#39;,
+  txSignature: &#39;4xKp…purchaseSig&#39;,
+  apiKey: process.env.THREE_WS_API_KEY, // your three.ws bearer token
+});
+</code></pre>
+<h2 id="api"><a class="anchor" href="#api" aria-label="Link to this section">#</a>API</h2>
+<p>The SDK is a thin wrapper over the live three.ws endpoints: the platform does the
+Solana work (PDA derivation, RPC reads, minting) server-side, so every call is one
+<code>fetch</code> and the client stays zero-dependency.</p>
+<h3 id="verifylicense-holder-agent-skill-network-promiseboolean"><a class="anchor" href="#verifylicense-holder-agent-skill-network-promiseboolean" aria-label="Link to this section">#</a><code>verifyLicense({ holder, agent, skill, network? }) → Promise&lt;boolean&gt;</code></h3>
+<p>The headline check. Resolves to <code>true</code> when <code>holder</code> owns an active (non-revoked)
+license for <code>skill</code> on <code>agent</code>. Wraps
+<code>GET /api/skills/license-onchain?wallet=…&amp;agent_mint=…&amp;skill=…</code> and returns its
+<code>data.owned</code> field.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>holder</code></td>
+<td><code>string</code></td>
+<td>—</td>
+<td>Base58 Solana pubkey of the wallet to check.</td>
+</tr>
+<tr>
+<td><code>agent</code></td>
+<td><code>string</code></td>
+<td>—</td>
+<td>The agent&#39;s on-chain grouping mint (its skill-collection mint).</td>
+</tr>
+<tr>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>—</td>
+<td>Alternatively, a three.ws agent UUID — resolved to <code>skill_collection_mint</code> server-side. Pass <code>agent</code> <strong>or</strong> <code>agentId</code>.</td>
+</tr>
+<tr>
+<td><code>skill</code></td>
+<td><code>string</code></td>
+<td>—</td>
+<td>Skill name/slug (≤100 chars). Hashed with SHA-256 to form the PDA seed.</td>
+</tr>
+<tr>
+<td><code>network</code></td>
+<td><code>&#39;mainnet&#39; | &#39;devnet&#39;</code></td>
+<td><code>&#39;mainnet&#39;</code></td>
+<td>Which cluster to read.</td>
+</tr>
+</tbody></table>
+<h3 id="getlicenseinput-network-promiselicenserecord-null"><a class="anchor" href="#getlicenseinput-network-promiselicenserecord-null" aria-label="Link to this section">#</a><code>getLicense(input, { network? }) → Promise&lt;LicenseRecord \| null&gt;</code></h3>
+<p>Read the full license record. <code>input</code> is <code>{ holder, agent, skill }</code> (or
+<code>{ holder, agentId, skill }</code>), the same shape <code>verifyLicense</code> takes. Wraps
+<code>GET /api/skills/license-onchain</code> and returns <code>null</code> when no license exists
+on-chain.</p>
+<p><strong><code>LicenseRecord</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>owned</code></td>
+<td><code>boolean</code></td>
+<td>Exists <strong>and</strong> not revoked <strong>and</strong> authority matches the holder.</td>
+</tr>
+<tr>
+<td><code>exists</code></td>
+<td><code>boolean</code></td>
+<td>The PDA is present on-chain.</td>
+</tr>
+<tr>
+<td><code>revoked</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code> once <code>revokedAt !== 0</code> (refunded / frozen).</td>
+</tr>
+<tr>
+<td><code>authority</code></td>
+<td><code>string</code></td>
+<td>The wallet that owns the license.</td>
+</tr>
+<tr>
+<td><code>agentMint</code></td>
+<td><code>string</code></td>
+<td>The agent grouping mint recorded on the license.</td>
+</tr>
+<tr>
+<td><code>nftMint</code></td>
+<td><code>string</code></td>
+<td>The 1/1 SPL NFT mint backing the license.</td>
+</tr>
+<tr>
+<td><code>ownerTokenAccount</code></td>
+<td><code>string</code></td>
+<td>The holder&#39;s ATA for the NFT.</td>
+</tr>
+<tr>
+<td><code>skillName</code></td>
+<td><code>string</code></td>
+<td>Human-readable skill identifier (≤64 bytes).</td>
+</tr>
+<tr>
+<td><code>skillHash</code></td>
+<td><code>string</code></td>
+<td>Hex SHA-256 of <code>skillName</code> (the third PDA seed).</td>
+</tr>
+<tr>
+<td><code>purchaseDate</code></td>
+<td><code>number</code></td>
+<td>Unix seconds the license was minted.</td>
+</tr>
+<tr>
+<td><code>revokedAt</code></td>
+<td><code>number</code></td>
+<td>Unix seconds when revoked, or <code>0</code> while active.</td>
+</tr>
+<tr>
+<td><code>license</code></td>
+<td><code>string</code></td>
+<td>The <code>SkillLicense</code> PDA address.</td>
+</tr>
+<tr>
+<td><code>explorer</code></td>
+<td><code>string</code></td>
+<td>Explorer link to the license account.</td>
+</tr>
+</tbody></table>
+<h3 id="skillseedskillname-promisestring"><a class="anchor" href="#skillseedskillname-promisestring" aria-label="Link to this section">#</a><code>skillSeed(skillName) → Promise&lt;string&gt;</code></h3>
+<p><code>sha256(skillName)</code> as a 32-byte hex string — the fixed-length third PDA seed.
+Async (Web Crypto&#39;s <code>crypto.subtle.digest</code>, so it runs zero-dep in Node 18+ and
+the browser). Matches the program&#39;s <code>skill_seed()</code> (Solana <code>hash::hash</code> is
+SHA-256), so it reproduces the exact hash the on-chain seed uses.</p>
+<h3 id="mintlicense-agentid-skill-buyer-txsignature-apikey-promisemintresult"><a class="anchor" href="#mintlicense-agentid-skill-buyer-txsignature-apikey-promisemintresult" aria-label="Link to this section">#</a><code>mintLicense({ agentId, skill, buyer, txSignature?, apiKey }) → Promise&lt;MintResult&gt;</code></h3>
+<p><strong>Server-side.</strong> Mints the on-chain license to <code>buyer</code> after their purchase is
+confirmed. Wraps <code>POST /api/skills/mint</code>, which verifies the payment reached the
+agent&#39;s payout wallet before minting — a caller can never mint a free license.
+Idempotent: a second call returns the existing mint.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>three.ws agent UUID.</td>
+</tr>
+<tr>
+<td><code>skill</code></td>
+<td><code>string</code></td>
+<td>Skill name/slug (≤100 chars).</td>
+</tr>
+<tr>
+<td><code>buyer</code></td>
+<td><code>string</code></td>
+<td>Recipient wallet — must be a Solana wallet linked to the caller&#39;s account.</td>
+</tr>
+<tr>
+<td><code>txSignature</code></td>
+<td><code>string</code></td>
+<td>The purchase transaction signature (optional; the most recent attempt is used otherwise).</td>
+</tr>
+<tr>
+<td><code>apiKey</code></td>
+<td><code>string</code></td>
+<td>Bearer token for the authenticated three.ws account (overrides the client&#39;s <code>apiKey</code>).</td>
+</tr>
+</tbody></table>
+<p>To point the client at a different origin, construct one with
+<code>createSkillLicense({ baseUrl, fetch, apiKey, headers })</code> instead of passing
+<code>baseUrl</code> per call; it returns <code>{ verifyLicense, getLicense, mintLicense }</code> bound
+to that configuration. <code>DEFAULT_BASE_URL</code> (<code>https://three.ws</code>) is exported too,
+and <code>THREE_WS_BASE_URL</code> in the environment overrides it without any code change.</p>
+<p><strong>Returns <code>MintResult</code></strong>: <code>{ nftMint, signature, collection, network, explorer, skill, agentId, purchaseId, alreadyMinted }</code>.</p>
+<p><code>PROGRAM_ID</code> is exported as a constant
+(<code>EdngSwxmDktyrr4phwGEZnCXEoQ27vgnBtowjhKa7Wr8</code>) — the same id on every cluster.</p>
+<h2 id="how-it-works"><a class="anchor" href="#how-it-works" aria-label="Link to this section">#</a>How it works</h2>
+<p>The license is two linked artifacts derived from one triple
+<code>(owner, agent_mint, sha256(skill_name))</code>:</p>
+<pre><code>buy skill ──▶ payment confirmed on-chain ──▶ mint_skill_license (minter-signed)
+                                                │
+                                                ├─ SkillLicense PDA   ← the queryable record
+                                                │     seeds = [&quot;skill_license&quot;, owner, agent, sha256(skill)]
+                                                │     { authority, agent_mint, nft_mint, skill_hash,
+                                                │       purchase_date, revoked_at, skill_name }
+                                                │
+                                                └─ 1/1 SPL NFT ──▶ owner&#39;s ATA
+                                                      mint PDA = [&quot;skill_mint&quot;, owner, agent, sha256(skill)]
+                                                      decimals 0, supply locked at 1 (mint authority removed)
+
+verify ─▶ derive SkillLicense PDA ─▶ getAccountInfo ─▶ exists &amp;&amp; revoked_at == 0  ⇒  owned
+</code></pre>
+<ul>
+<li><strong>The NFT</strong> is the transferable, wallet-visible proof of ownership.</li>
+<li><strong>The PDA</strong> is the cheap, strongly-typed record the platform reads to answer
+access questions in one <code>getAccountInfo</code> — no token-account enumeration.</li>
+<li><code>skill_name</code> can be up to 64 bytes (longer than the 32-byte per-seed limit),
+so it&#39;s hashed to a fixed 32 bytes. The client (<code>skillSeed</code>) computes the
+identical hash, so both sides derive the same addresses.</li>
+<li>Minting is <strong>idempotent</strong>: a second mint for the same triple fails because the
+PDAs already exist. The purchase can only ever produce one license.</li>
+</ul>
+<p>The program is <strong>Anchor</strong>, id <code>EdngSwxmDktyrr4phwGEZnCXEoQ27vgnBtowjhKa7Wr8</code>
+(identical on localnet/devnet/mainnet). Its instructions:</p>
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th>Signer</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>initialize_marketplace(minter)</code></td>
+<td>admin</td>
+<td>One-time singleton config; sets the authorized minter wallet.</td>
+</tr>
+<tr>
+<td><code>set_minter(new_minter)</code></td>
+<td>admin</td>
+<td>Rotate the minter (key rotation).</td>
+</tr>
+<tr>
+<td><code>mint_skill_license(skill_name)</code></td>
+<td>minter</td>
+<td>Create the <code>SkillLicense</code> PDA, mint the 1/1 NFT to the owner&#39;s ATA, lock supply at 1. Owner doesn&#39;t sign.</td>
+</tr>
+<tr>
+<td><code>burn_skill_license()</code></td>
+<td>owner</td>
+<td>Burn the NFT, close the token account + PDA, reclaim rent.</td>
+</tr>
+<tr>
+<td><code>revoke_skill_license()</code></td>
+<td>minter</td>
+<td>Refund path: freeze the holder&#39;s token account and stamp <code>revoked_at</code>; the PDA stays readable.</td>
+</tr>
+</tbody></table>
+<h2 id="errors-edge-cases"><a class="anchor" href="#errors-edge-cases" aria-label="Link to this section">#</a>Errors &amp; edge cases</h2>
+<p><code>verifyLicense</code> and <code>getLicense</code> only read public state, so they never need
+credentials. The shapes they surface, straight from the endpoint:</p>
+<p>Every rejection is a typed <code>ThreeWsError</code> carrying a stable <code>code</code>, the HTTP
+<code>status</code>, and the parsed <code>body</code>; a 402 arrives as <code>PaymentRequiredError</code> with the
+x402 challenge on <code>.accepts</code>. Both classes are exported.</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Meaning</th>
+<th>What you get</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>validation_error</code> (400)</td>
+<td><code>holder</code> / <code>agent</code> isn&#39;t a real 32-byte Solana address, or <code>skill</code> is empty/over 100 chars.</td>
+<td>Rejects before any chain read.</td>
+</tr>
+<tr>
+<td>Program not deployed</td>
+<td>The <code>skill_license</code> program isn&#39;t live on this cluster.</td>
+<td><code>getLicense</code> → <code>{ exists: false, owned: false, deployed: false }</code>; <code>verifyLicense</code> → <code>false</code>.</td>
+</tr>
+<tr>
+<td>No license</td>
+<td>The PDA doesn&#39;t exist — never purchased.</td>
+<td><code>getLicense</code> → <code>null</code>; <code>verifyLicense</code> → <code>false</code>.</td>
+</tr>
+<tr>
+<td>Revoked</td>
+<td>Refunded — frozen with <code>revoked_at</code> set.</td>
+<td><code>{ exists: true, revoked: true, owned: false }</code>.</td>
+</tr>
+<tr>
+<td><code>rpc_error</code> (502)</td>
+<td>The Solana RPC read failed.</td>
+<td>Rejects; retry or fall back.</td>
+</tr>
+<tr>
+<td><code>no_collection</code> (409)</td>
+<td>Resolved by <code>agentId</code> but the agent has no on-chain skill collection yet.</td>
+<td>Rejects — nothing can be licensed on-chain for that agent.</td>
+</tr>
+</tbody></table>
+<p><code>mintLicense</code> surfaces the mint endpoint&#39;s authenticated states:</p>
+<table>
+<thead>
+<tr>
+<th><code>code</code></th>
+<th>HTTP</th>
+<th>Meaning</th>
+<th>Recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>unauthorized</code></td>
+<td>401</td>
+<td>Missing/invalid bearer.</td>
+<td>Pass a valid <code>apiKey</code>.</td>
+</tr>
+<tr>
+<td><code>wallet_not_linked</code></td>
+<td>403</td>
+<td><code>buyer</code> isn&#39;t a Solana wallet linked to your account.</td>
+<td>Link the wallet first.</td>
+</tr>
+<tr>
+<td><code>no_purchase</code></td>
+<td>404</td>
+<td>No purchase row for this skill.</td>
+<td>Buy the skill before minting.</td>
+</tr>
+<tr>
+<td><code>payment_pending</code></td>
+<td>402</td>
+<td>The purchase payment isn&#39;t confirmed yet.</td>
+<td>Wait for confirmation, then retry.</td>
+</tr>
+<tr>
+<td><code>signature_mismatch</code></td>
+<td>400</td>
+<td><code>txSignature</code> contradicts the recorded purchase.</td>
+<td>Send the correct signature, or omit it.</td>
+</tr>
+<tr>
+<td><code>already minted</code></td>
+<td>200</td>
+<td>A license already exists.</td>
+<td>Returned with <code>alreadyMinted: true</code> — treat as success.</td>
+</tr>
+</tbody></table>
+<p>Every state is designed: a missing license reads as <code>false</code>, never a crash; an
+unconfirmed payment returns <code>402</code>, never a free mint.</p>
+<h2 id="examples"><a class="anchor" href="#examples" aria-label="Link to this section">#</a>Examples</h2>
+<p><strong>Gate a paid x402 endpoint on real ownership</strong> — pair with
+<a href="https://www.npmjs.com/package/@three-ws/x402-server"><code>@three-ws/x402-server</code></a>:</p>
+<pre><code class="language-js">import { verifyLicense } from &#39;@three-ws/skill-license&#39;;
+
+async function handler(req, res) {
+  const owns = await verifyLicense({
+    holder: req.wallet,
+    agent: AGENT_SKILL_COLLECTION_MINT,
+    skill: &#39;web-search&#39;,
+  });
+  if (!owns) return res.status(402).json({ error: &#39;license required&#39; });
+  // …serve the skill
+}
+</code></pre>
+<p><strong>Render a &quot;You own this&quot; badge in the browser</strong> — verification is read-only, so
+it runs client-side with no signer:</p>
+<pre><code class="language-js">import { verifyLicense } from &#39;@three-ws/skill-license&#39;;
+
+const owned = await verifyLicense({ holder: wallet, agentId: AGENT_UUID, skill });
+badge.textContent = owned ? &#39;Licensed on-chain ✓&#39; : &#39;Buy this skill&#39;;
+</code></pre>
+<p><strong>Under the hood</strong> — the raw HTTP the verify path wraps, so the docs hold even
+before the wrapper ships:</p>
+<pre><code class="language-js">const u = new URL(&#39;https://three.ws/api/skills/license-onchain&#39;);
+u.searchParams.set(&#39;wallet&#39;, holder);
+u.searchParams.set(&#39;agent_mint&#39;, agent); // or agent_id=&lt;uuid&gt;
+u.searchParams.set(&#39;skill&#39;, skill);
+
+const { data } = await fetch(u).then((r) =&gt; r.json());
+// data → { owned, exists, revoked, deployed, license, nft_mint,
+//          owner_token_account, program_id, explorer, record }
+console.log(data.owned);
+</code></pre>
+<h2 id="related"><a class="anchor" href="#related" aria-label="Link to this section">#</a>Related</h2>
+<ul>
+<li><a href="https://www.npmjs.com/package/@three-ws/x402-server"><code>@three-ws/x402-server</code></a> — gate a paid endpoint on a verified license.</li>
+<li><a href="https://www.npmjs.com/package/@three-ws/x402-fetch"><code>@three-ws/x402-fetch</code></a> — pay for the skill that mints the license.</li>
+<li><a href="https://www.npmjs.com/package/@three-ws/agent-memory"><code>@three-ws/agent-memory</code></a> — durable state for the agents these skills extend.</li>
+<li><a href="https://www.npmjs.com/package/@three-ws/reputation"><code>@three-ws/reputation</code></a> — on-chain agent reputation, the same trustless-state pattern.</li>
+</ul>
+<hr>
+<p align="center">Built by <a href="https://three.ws">three.ws</a> · The only coin is <a href="https://three.ws">$THREE</a></p>
+</main>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ul><li><a href="#why">Why</a></li><li><a href="#install">Install</a></li><li><a href="#quick-start">Quick start</a></li><li><a href="#api">API</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#errors-edge-cases">Errors &amp; edge cases</a></li><li><a href="#examples">Examples</a></li><li><a href="#related">Related</a></li></ul></nav>
+</div>
+<footer><div class="foot-in"><span>Apache-2.0 licensed</span><a href="https://github.com/nirholas/skill-license/issues">Issues</a><a href="https://github.com/nirholas/skill-license/blob/main/CONTRIBUTING.md">Contributing</a><a href="https://github.com/nirholas/skill-license/security/policy">Security</a><a href="https://three.ws">Part of three.ws</a></div></footer>
+<script>document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
+var t=b.getAttribute('data-copy');var done=function(){var o=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=o},1400)};
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){})}
+else{var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');done()}catch(e){}a.remove()}})});</script>
+</body>
+</html>

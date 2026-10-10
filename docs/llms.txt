@@ -1,0 +1,19 @@
+# @three-ws/skill-license
+
+> On-chain skill licenses for agents — each purchased skill is a 1/1 SPL NFT plus a deterministic SkillLicense PDA. Mint, verify, and read trustless skill access in one import, no database required.
+
+@three-ws/skill-license is a JavaScript library from three.ws. Install: `npm install @three-ws/skill-license`.
+
+## Docs
+
+- [README](https://github.com/nirholas/skill-license/blob/main/README.md): install, configuration, full reference
+- [Documentation site](https://nirholas.github.io/skill-license/): the README as a web page
+- [Full text for LLMs](https://nirholas.github.io/skill-license/llms-full.txt): README inlined
+- [AGENTS.md](https://github.com/nirholas/skill-license/blob/main/AGENTS.md): guidance for coding agents
+
+## Project
+
+- [Source](https://github.com/nirholas/skill-license)
+- [npm](https://www.npmjs.com/package/@three-ws/skill-license)
+- [three.ws](https://three.ws): the platform this is part of
+- [Issues](https://github.com/nirholas/skill-license/issues)
